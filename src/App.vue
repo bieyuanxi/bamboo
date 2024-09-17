@@ -1,29 +1,164 @@
 <script setup lang="ts">
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import Greet from "./components/Greet.vue";
+import type { Component } from 'vue'
+import { h, ref } from 'vue'
+import { NIcon, NFlex, NSwitch, NMenu } from 'naive-ui'
+import { NLayout, NLayoutHeader, NLayoutFooter, NLayoutSider, NLayoutContent } from "naive-ui";
+import { NConfigProvider, NNotificationProvider } from "naive-ui";
+import { darkTheme } from 'naive-ui'
+import type { GlobalTheme } from 'naive-ui'
+import type { MenuOption } from 'naive-ui'
+import {
+  BookOutline as BookIcon,
+  PersonOutline as PersonIcon,
+  WineOutline as WineIcon,
+  HomeOutline as HomeIcon,
+} from '@vicons/ionicons5'
+import { RouterLink, RouterView } from 'vue-router';
+
+function renderIcon(icon: Component) {
+  return () => h(NIcon, null, { default: () => h(icon) })
+}
+
+const theme = ref<GlobalTheme | null>(darkTheme)
+
+const activeKey = ref<string | null>(null)
+const collapsed = ref(true)
+
+const menuOptions: MenuOption[] = [
+  {
+    label: () =>
+      h(
+        RouterLink,
+        {
+          to: {
+            path: "/about"
+          }
+        },
+        { default: () => '回家' }
+      ),
+    key: 'go-back-home',
+    icon: renderIcon(HomeIcon)
+  },
+  {
+    label: '且听风吟',
+    key: 'hear-the-wind-sing',
+    icon: renderIcon(BookIcon)
+  },
+  {
+    label: '且听风吟',
+    key: 'hear-the-wind-sing',
+    icon: renderIcon(BookIcon)
+  },
+  {
+    label: '且听风吟',
+    key: 'hear-the-wind-sing',
+    icon: renderIcon(BookIcon)
+  },
+  {
+    label: '且听风吟',
+    key: 'hear-the-wind-sing',
+    icon: renderIcon(BookIcon)
+  },
+  {
+    label: '且听风吟',
+    key: 'hear-the-wind-sing',
+    icon: renderIcon(BookIcon)
+  },
+  {
+    label: '1973年的弹珠玩具',
+    key: 'pinball-1973',
+    icon: renderIcon(BookIcon),
+    disabled: true,
+    children: [
+      {
+        label: '鼠',
+        key: 'rat'
+      }
+    ]
+  },
+  {
+    label: '寻羊冒险记',
+    key: 'a-wild-sheep-chase',
+    disabled: true,
+    icon: renderIcon(BookIcon)
+  },
+  {
+    label: '舞，舞，舞',
+    key: 'dance-dance-dance',
+    icon: renderIcon(BookIcon),
+    children: [
+      {
+        type: 'group',
+        label: '人物',
+        key: 'people',
+        children: [
+          {
+            label: '叙事者',
+            key: 'narrator',
+            icon: renderIcon(PersonIcon)
+          },
+          {
+            label: '羊男',
+            key: 'sheep-man',
+            icon: renderIcon(PersonIcon)
+          }
+        ]
+      },
+      {
+        label: '饮品',
+        key: 'beverage',
+        icon: renderIcon(WineIcon),
+        children: [
+          {
+            label: '威士忌',
+            key: 'whisky'
+          }
+        ]
+      },
+      {
+        label: '食物',
+        key: 'food',
+        children: [
+          {
+            label: '三明治',
+            key: 'sandwich'
+          }
+        ]
+      },
+      {
+        label: '过去增多，未来减少',
+        key: 'the-past-increases-the-future-recedes'
+      }
+    ]
+  }
+]
+
+
 </script>
 
 <template>
-  <div class="container">
-    <h1>Welcome to Tauri!</h1>
-
-    <div class="row">
-      <a href="https://vitejs.dev" target="_blank">
-        <img src="/vite.svg" class="logo vite" alt="Vite logo" />
-      </a>
-      <a href="https://tauri.app" target="_blank">
-        <img src="/tauri.svg" class="logo tauri" alt="Tauri logo" />
-      </a>
-      <a href="https://vuejs.org/" target="_blank">
-        <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-      </a>
-    </div>
-
-    <p>Click on the Tauri, Vite, and Vue logos to learn more.</p>
-
-    <Greet />
-  </div>
+  <n-config-provider :theme="theme" class="container">
+    <n-notification-provider>
+      <n-layout has-sider>
+        <n-layout-sider bordered collapse-mode="width" :collapsed-width="64" :width="240" v-model:collapsed="collapsed"
+          show-trigger :native-scrollbar="false">
+          <n-menu v-model:value="activeKey" :collapsed="collapsed" :collapsed-width="64" :collapsed-icon-size="22"
+            :options="menuOptions"/>
+        </n-layout-sider>
+        <n-layout :native-scrollbar="false">
+          <n-layout-header></n-layout-header>
+          <n-layout-content>
+            <router-view v-slot="{ Component }">
+              <keep-alive>
+                <component :is="Component" />
+              </keep-alive>
+            </router-view>
+          </n-layout-content>
+          <n-layout-footer position="absolute">Powered by Tauri</n-layout-footer>
+        </n-layout>
+      </n-layout>
+    </n-notification-provider>
+  </n-config-provider>
 </template>
 
 <style scoped>
@@ -53,11 +188,11 @@ import Greet from "./components/Greet.vue";
 
 .container {
   margin: 0;
-  padding-top: 10vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   text-align: center;
+  height: 100vh;
 }
 
 .logo {
@@ -111,6 +246,7 @@ button {
 button:hover {
   border-color: #396cd8;
 }
+
 button:active {
   border-color: #396cd8;
   background-color: #e8e8e8;
@@ -140,9 +276,9 @@ button {
     color: #ffffff;
     background-color: #0f0f0f98;
   }
+
   button:active {
     background-color: #0f0f0f69;
   }
 }
-
 </style>
